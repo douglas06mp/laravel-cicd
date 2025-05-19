@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->userRepository = new UserRepository();
+    $this->userRepository = new UserRepository;
 });
 
 it('can get all users', function () {

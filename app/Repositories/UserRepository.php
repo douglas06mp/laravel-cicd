@@ -30,7 +30,6 @@ class UserRepository
     /**
      * Create a new user.
      *
-     * @param  array  $data
      * @return \App\Models\User
      */
     public function createUser(array $data)
