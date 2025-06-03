@@ -1,5 +1,4 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:913417664150:task-definition/laravel-cicd-task-definition:3",
     "containerDefinitions": [
         {
             "name": "app",
