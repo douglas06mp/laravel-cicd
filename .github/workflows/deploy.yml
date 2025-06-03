@@ -75,7 +75,8 @@ jobs:
         id: render_task_definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
+          task-definition: ${{ secrets.TASK_DEFINITION_PATH }}
+          container-name: ${{ secrets.TASK_CONTAINER_NAME }}
           image: ${{ steps.build_and_push_image.outputs.image }}
 
       - name: Deploy to ECS
