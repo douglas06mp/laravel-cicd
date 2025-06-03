@@ -37,7 +37,7 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run Pint
-        run: vendor/bin/pint
+        run: vendor/bin/pint --test
 
       - name: Run tests
         run: vendor/bin/pest --parallel
@@ -86,3 +86,4 @@ jobs:
           service: ${{ secrets.ECS_SERVICE_NAME }}
           task-definition: ${{ steps.render_task_definition.outputs.task-definition }}
           wait-for-service-stability: true
+          force-new-deployment: true
