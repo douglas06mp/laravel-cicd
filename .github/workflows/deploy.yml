@@ -47,11 +47,6 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
 
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
-      SUPABASE_PROJECT_ID: ${{ secrets.PRODUCTION_DB_PROJECT_ID }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -77,13 +72,24 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Supabase migration
-        uses: supabase/setup-cli@v1
+      - name: Setup PHP for migrations
+        uses: shivammathur/setup-php@v2
         with:
-          version: latest
+          php-version: '8.4'
+          extensions: mbstring, xml, curl, zip, gd, bcmath, fileinfo, pdo, pdo_pgsql
+          coverage: none
 
-      - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: supabase db push
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --no-dev
+
+      - name: Create .env file
+        run: |
+          echo "APP_ENV=production" > .env
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_URL=${{ secrets.DATABASE_URL }}" >> .env
+
+      - name: Run migrations
+        run: php artisan migrate --force
 
       - name: Render ECS task definition
         id: render_task_definition
